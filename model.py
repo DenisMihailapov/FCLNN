@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import numpy as np
 
-from utils.functions import softmax, softmax_with_cross_entropy, mse
 from layers import FullyConnectedLayer
+from utils.functions import softmax, softmax_with_cross_entropy, mse
 
 
 class FCLayersNN:
@@ -49,7 +49,7 @@ class FCLayersNN:
         for fc_layer in self.fc_layers[:0:-1]:
             d_pred = fc_layer.backward(d_pred)
 
-            #print("d_pred", d_pred[5])
+            # print("d_pred", d_pred[5])
 
         return self.fc_layers[0].backward(d_pred)
 

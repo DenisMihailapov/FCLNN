@@ -35,6 +35,7 @@ class Param:
     def T(self):
         return self.value.T
 
+
 class IFunction:
 
     def forward(self, X):
@@ -48,6 +49,7 @@ class IFunction:
 
     def params(self):
         return {}
+
 
 class ReLUFunction(IFunction):
     def __init__(self):
@@ -70,15 +72,14 @@ class FullyConnectedLayer:
         self.X = None
 
         self.set_activation(activation)
-    
-    
+
     def set_activation(self, activation=None):
         if activation is None:
             self.act = IFunction()
-        elif activation=="relu":
-            self.act = ReLUFunction()     
+        elif activation == "relu":
+            self.act = ReLUFunction()
         else:
-            raise NotImplementedError(f"Unknown activation {activation}")  
+            raise NotImplementedError(f"Unknown activation {activation}")
 
     def forward(self, X):
         self.X = X
@@ -102,8 +103,8 @@ class FullyConnectedLayer:
           with respect to input
         """
 
-        #print("d_out", d_out[:5, :5])
-        d_out = self.act.backward(d_out) # d_act
+        # print("d_out", d_out[:5, :5])
+        d_out = self.act.backward(d_out)  # d_act
 
         self.W.grad = np.dot(self.X.T, d_out)
         self.B.grad = np.dot(np.ones((1, self.X.shape[0])), d_out)
@@ -111,7 +112,7 @@ class FullyConnectedLayer:
         # print("self.W.grad", self.W.grad)
         # print("self.B.grad", self.W.grad)
 
-        d_out = np.dot(d_out, self.W.T()) # d_X
+        d_out = np.dot(d_out, self.W.T())  # d_X
         return d_out
 
     def params(self):

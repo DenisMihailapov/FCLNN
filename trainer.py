@@ -1,9 +1,9 @@
-from dataset import Dataset
-from model import FCLayersNN
 import numpy as np
 from tqdm import tqdm
 
+from dataset import Dataset
 from metrics import compute_accuracy
+from model import FCLayersNN
 from optim import Optimizer
 
 
@@ -15,7 +15,7 @@ class Trainer:
     """
 
     def __init__(self, model: FCLayersNN, dataset: Dataset, optim: Optimizer,
-                 num_epochs=20,  batch_size=20  # TODO move in dataset
+                 num_epochs=20, batch_size=20  # TODO move in dataset
                  ):
         """
         Initializes the trainer
@@ -70,7 +70,7 @@ class Trainer:
             last_batch_loss, ave_loss, train_accuracy = self.epoch_step()
 
             self.dataset.mode("val")
-            if self.dataset.y.dtype in  [np.int, np.uint8, np.bool]:
+            if self.dataset.y.dtype in [np.int, np.uint8, np.bool]:
                 val_accuracy = compute_accuracy(self.model, self.dataset)
                 print(f"\n Loss: {last_batch_loss}, Train accuracy: {train_accuracy}, val accuracy: {val_accuracy}")
             else:

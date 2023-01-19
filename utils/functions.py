@@ -110,5 +110,5 @@ def mse(x, y, get_gradient=False):
     """Функция измерения среднеквадратичной ошибки"""
     d = x - y
     if get_gradient:
-        return np.mean(d ** 2), 2*d
+        return np.mean(d ** 2), 2 * d
     return np.mean(d ** 2)

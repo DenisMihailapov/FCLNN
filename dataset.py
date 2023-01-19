@@ -46,7 +46,7 @@ def random_split_train_val(X, y, num_val, seed=42):
 
 def prepare_for_neural_network(train_X, test_X):
     train_flat = train_X.reshape(train_X.shape[0], -1).astype(np.float64) / 255.0
-    test_flat = test_X .reshape(test_X.shape[0],  -1).astype(np.float64) / 255.0
+    test_flat = test_X.reshape(test_X.shape[0], -1).astype(np.float64) / 255.0
 
     # Subtract mean
     mean_image = np.mean(train_flat, axis=0)
@@ -64,7 +64,6 @@ class Dataset:
     def __init__(self, data_path="./data", batch_size=32):
         self.X, self.y = None, None
         self.iter = -1
-        
 
         self.train_X, self.train_y, self.test_X, self.test_y = load_svhn(data_path, max_train=10000, max_test=1000)
         self.train_X, self.test_X = prepare_for_neural_network(self.train_X, self.test_X)
@@ -73,7 +72,7 @@ class Dataset:
 
         self.batch_size = batch_size
         self.set_batches_indices()
-    
+
     def get_data(self):
         return self.train_X, self.train_y, self.test_X, self.test_y
 
@@ -82,21 +81,18 @@ class Dataset:
         self.test_X, self.test_y = X, y
 
         self.random_split_train_val()
-        self.set_batches_indices()    
-
+        self.set_batches_indices()
 
     def random_split_train_val(self):
         self.train_X, self.train_y, \
-        self.val_X, self.val_y = random_split_train_val(
-            self.train_X, self.train_y, num_val=int(self.train_y.shape[0]*0.25))
-
+            self.val_X, self.val_y = random_split_train_val(
+            self.train_X, self.train_y, num_val=int(self.train_y.shape[0] * 0.25))
 
     def set_batches_indices(self):
         shuffled_indices = np.arange(self.train_X.shape[0])
         np.random.shuffle(shuffled_indices)
         sections = np.arange(self.batch_size, self.train_X.shape[0], self.batch_size)
         self.batches_indices = np.array_split(shuffled_indices, sections)
-
 
     def get_dim_features(self):
         return self.train_X.shape[1], len(np.unique(self.train_y))

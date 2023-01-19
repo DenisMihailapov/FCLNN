@@ -33,7 +33,7 @@ class Optimizer:
 
         opt_func = self.get_opt_func()
         for param in self.model_params.values():
-            #print("W.grad", param["W"].grad[:5])
+            # print("W.grad", param["W"].grad[:5])
             # print("W.v", param["W"].value, "\nW.g", param["W"].grad, "\nlr", self.learning_rate)
             param["W"].value = opt_func(param["W"].value, param["W"].grad)
             param["B"].value = opt_func(param["B"].value, param["B"].grad)
