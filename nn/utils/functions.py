@@ -27,6 +27,10 @@ def softmax(predictions):
     return probs
 
 
+def sigmoid(x):
+    return 1. / (1. + np.exp(-x))
+
+
 def cross_entropy_loss(probs, target_index):
     '''
     Computes cross-entropy loss
