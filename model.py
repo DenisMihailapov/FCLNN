@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import numpy as np
 
-from layers import FullyConnectedLayer
-from utils.functions import softmax, softmax_with_cross_entropy, mse
+from nn import FullyConnectedLayer
+from nn.utils.functions import softmax, softmax_with_cross_entropy, mse
 
 
 class FCLayersNN:
@@ -37,7 +37,7 @@ class FCLayersNN:
             for i in range(1, len(self.n_layers))
         ]
 
-        self.fc_layers[-1].set_activation()
+        self.fc_layers[-1].reset_activation()
 
     def zero_grad(self):
         for fc_layer in self.fc_layers:
