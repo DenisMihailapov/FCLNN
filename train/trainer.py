@@ -15,7 +15,7 @@ class Trainer:
     """
 
     def __init__(self, model: FCLayersNN, dataset: Dataset, optim: Optimizer,
-                 num_epochs=20, batch_size=20  # TODO move in dataset
+                 log_freq=5, num_epochs=20, batch_size=20  # TODO move in dataset
                  ):
         """
         Initializes the trainer
@@ -34,6 +34,7 @@ class Trainer:
         self.dataset: Dataset = dataset
         self.batch_size = batch_size
         self.num_epochs = num_epochs
+        self.log_freq = log_freq
 
         self.optimizer: Optimizer = optim  # TODO lr change strategy
         # self.learning_rate = learning_rate
@@ -65,17 +66,20 @@ class Trainer:
 
         loss_history, train_acc_history, val_acc_history = [], [], []
 
-        for _ in tqdm(range(self.num_epochs)):
+        for epoch in tqdm(range(self.num_epochs)):
 
+            self.dataset.mode("train")
             last_batch_loss, ave_loss, train_accuracy = self.epoch_step()
 
             self.dataset.mode("val")
-            if self.dataset.y.dtype in [np.int, np.uint8, np.bool]:
-                val_accuracy = compute_accuracy(self.model, self.dataset)
-                print(f"\n Loss: {last_batch_loss}, Train accuracy: {train_accuracy}, val accuracy: {val_accuracy}")
-            else:
-                print(f"\n Loss: {last_batch_loss}")
-                train_accuracy, val_accuracy = -1, -1
+            val_accuracy = compute_accuracy(self.model, self.dataset)
+
+            if epoch % self.log_freq == 0:
+                if self.dataset.y.dtype in [np.int, np.uint8, np.bool]:
+                    print(f"\n Loss: {last_batch_loss}, Train accuracy: {train_accuracy}, val accuracy: {val_accuracy}")
+                else:
+                    print(f"\n Loss: {last_batch_loss}")
+                    train_accuracy, val_accuracy = -1, -1
 
             loss_history.append(ave_loss)
             train_acc_history.append(train_accuracy)
