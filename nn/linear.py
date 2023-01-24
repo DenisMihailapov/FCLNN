@@ -1,35 +1,48 @@
 from __future__ import annotations
 
+from abc import ABC
+
 import numpy as np
 
-from nn.activations import IdentityFunc, ReLUFunction
+from nn.activations import Identity, ReLU, Softmax, Sigmoid, LeakyReLU, IFunc, SiLU
 from nn.utils.train_param import Param
 
 
-class FullyConnectedLayer:
-    def __init__(self, n_input, n_output, reg_strength, activation="relu"):
+class FullyConnectedLayer(IFunc, ABC):
+    def __init__(self, n_input, n_output, reg_strength, activation="sigmoid"):
         self.reg = reg_strength
 
         self.weight = Param(0.1 * np.random.randn(n_input, n_output))
         self.bias = Param(0.1 * np.random.randn(1, n_output))
         self.x = None
 
+        self.act = None
         self.reset_activation(activation)
 
-    def reset_activation(self, activation=None):
-        if activation is None:
-            self.act = IdentityFunc()
+    def reset_activation(self, activation="ident"):
+        if activation == "ident":
+            self.act = Identity()
+
         elif activation == "relu":
-            self.act = ReLUFunction()
+            self.act = ReLU()
+        elif activation == "leaky_relu":
+            self.act = LeakyReLU()
+        elif activation == "p_relu":
+            raise NotImplementedError("TODO")
+
+        elif activation == "sigmoid":
+            self.act = Sigmoid()
+        elif activation == "silu":
+            self.act = SiLU()
+
+        elif activation == "softmax":
+            self.act = Softmax()
         else:
             raise NotImplementedError(f"Unknown activation {activation}")
 
     def forward(self, x):
         self.x = x
         return self.act(self.bias + self.weight.dot(x))
-
-    def __call__(self, x):
-        return self.forward(x)
 
     def backward(self, d_out):
         """

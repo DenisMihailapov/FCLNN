@@ -9,7 +9,7 @@ from nn.utils.functions import softmax, softmax_with_cross_entropy, mse
 class FCLayersNN:
     """ Neural network with fully connected layers """
 
-    def __init__(self, n_input, n_output, n_hidden: int | list = None, reg=0):
+    def __init__(self, n_input, n_output, n_hidden: int | list = None, reg=0, activation="relu"):
         """
         Initializes the neural network
         Arguments:
@@ -33,7 +33,10 @@ class FCLayersNN:
 
         self.n_layers = [n_input] + n_hidden + [n_output]
         self.fc_layers = [
-            FullyConnectedLayer(self.n_layers[i - 1], self.n_layers[i], reg_strength=reg)
+            FullyConnectedLayer(
+                self.n_layers[i - 1], self.n_layers[i],
+                reg_strength=reg, activation=activation
+            )
             for i in range(1, len(self.n_layers))
         ]
 
