@@ -6,24 +6,23 @@ from nn.utils.train_param import Param
 
 
 class Optimizer:
-    """
-    Implements differed optimization rules for weights update
-    """
+    """Implements differed optimization rules for weights update."""
 
     def _update_rule(self, layer: str, param: Param, p_key: str) -> np.ndarray:
+        """weights update rule"""
         raise NotImplementedError
 
     def zero_grad(self):
+        """Sets gradients of all model parameters to zero."""
         raise NotImplementedError
 
     def step(self):
+        """Update the parameter values using the update rule."""
         raise NotImplementedError
 
 
 class SGD(Optimizer, ABC):
-    """
-    Implements SGD with momentum
-    """
+    """Implements SGD with momentum and weight decay"""
 
     def __init__(self,
                  model_params: dict[str, dict[str, Param]],
