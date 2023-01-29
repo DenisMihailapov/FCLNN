@@ -4,22 +4,21 @@ from dataset import Dataset
 
 
 def multiclass_accuracy(prediction, ground_truth):
-    """
-    Computes metrics for multiclass classification
+    """Computes metrics for multiclass classification.
+
     Arguments:
-    prediction, np array of int (num_samples) - model predictions
-    ground_truth, np array of int (num_samples) - true labels
+        prediction, np array of int (num_samples) - model predictions.
+        ground_truth, np array of int (num_samples) - true labels.
+
     Returns:
-    accuracy - ratio of accurate predictions to total samples
+        accuracy - ratio of accurate predictions to total samples.
     """
 
     return np.round(np.sum(prediction == ground_truth) / len(prediction), decimals=3)
 
 
 def compute_accuracy(model, dataset: Dataset):
-    """
-    Computes accuracy on provided data using mini-batches
-    """
+    """Computes accuracy on provided data using mini-batches"""
 
     indices = np.arange(dataset.X.shape[0])
     sections = np.arange(dataset.batch_size, dataset.X.shape[0], dataset.batch_size)

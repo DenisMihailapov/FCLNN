@@ -4,8 +4,7 @@ import numpy as np
 
 
 class Param:
-    """
-    Trainable parameter of the model
+    """Trainable parameter of the model.
     Captures both parameter value and the gradient
     """
 

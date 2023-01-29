@@ -91,12 +91,13 @@ class FCLayersNN:
         return np.round(loss, decimals=5)
 
     def predict(self, X):
-        """
-        Produces classifier predictions on the set
+        """Produces classifier predictions on the set.
+
         Arguments:
-          X, np array (test_samples, num_features)
+            X, np array (test_samples, num_features)
+
         Returns:
-          y_pred, np.array of int (test_samples)
+            y_pred, np.array of int (test_samples)
         """
 
         self.pred = X

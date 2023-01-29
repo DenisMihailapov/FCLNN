@@ -45,18 +45,13 @@ class FullyConnectedLayer(IFunc, ABC):
         return self.act(self.bias + self.weight.dot(x))
 
     def backward(self, d_out):
-        """
-        backward pass
-        Computes gradient with respect to input and
-        accumulates gradients within self.weight and self.b
+        """Computes gradient with respect to input and accumulates gradients within self.weight and self.b
 
         Arguments:
-        d_out, np array (batch_size, n_output) - gradient
-          of loss function with respect to output
+            d_out, np array (batch_size, n_output) - gradient of loss function with respect to output.
 
         Returns:
-        d_result: np array (batch_size, n_input) - gradient
-          with respect to input
+            d_result: np array (batch_size, n_input) - gradient with respect to input.
         """
 
         d_out = self.act.backward(d_out)  # d_act

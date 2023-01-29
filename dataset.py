@@ -57,9 +57,7 @@ def prepare_for_neural_network(train_X, test_X):
 
 
 class Dataset:
-    """
-    Utility class to hold training and validation data
-    """
+    """Utility class to hold training and validation data"""
 
     def __init__(self, data_path="./data", batch_size=32):
         self.X, self.y = None, None
@@ -74,6 +72,7 @@ class Dataset:
         self.set_batches_indices()
 
     def get_data(self):
+        """Return train/test split"""
         return self.train_X, self.train_y, self.test_X, self.test_y
 
     def set_data(self, X, y):

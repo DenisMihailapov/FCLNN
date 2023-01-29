@@ -32,18 +32,18 @@ def sigmoid(x):
 
 
 def cross_entropy_loss(probs, target_index):
-    '''
-    Computes cross-entropy loss
+    """Computes cross-entropy loss.
 
     Arguments:
-      probs, np array, shape is either (N) or (batch_size, N) -
-        probabilities for every class
-      target_index: np array of int, shape is (1) or (batch_size) -
-        index of the true class for given sample(s)
+        probs, np array, shape is either (N) or (batch_size, N) -
+        probabilities for every class.
+
+        target_index: np array of int, shape is (1) or (batch_size) -
+        index of the true class for given sample(s).
 
     Returns:
-      loss: single value
-    '''
+        loss: single value.
+    """
 
     # loss for (N) shape probs
     if probs.shape == (len(probs),):
