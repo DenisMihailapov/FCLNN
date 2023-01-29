@@ -15,7 +15,7 @@ class Trainer:
     """
 
     def __init__(self, model: FCLayersNN, dataset: Dataset, optim: Optimizer,
-                 log_freq=5, num_epochs=20, batch_size=20  # TODO move in dataset
+                 log_freq=5, num_epochs=20
                  ):
         """
         Initializes the trainer
@@ -25,14 +25,12 @@ class Trainer:
         dataset, instance of Dataset class - data to train on
         optim - optimization method (see optim.py)
         num_epochs, int - number of epochs to train
-        batch_size, int - batch size
         learning_rate, float - initial learning rate
         learning_rate_decal, float - ratio for decaying learning rate
            every epoch
         """
         self.model: FCLayersNN = model
         self.dataset: Dataset = dataset
-        self.batch_size = batch_size
         self.num_epochs = num_epochs
         self.log_freq = log_freq
 
