@@ -56,16 +56,22 @@ class FCLayersNN:
 
         return self.fc_layers[0].backward(d_pred)
 
-    def add_l2_regul_grad(self):
+    def _add_l2_regul_grad(self):
         for fc_layer in self.fc_layers:
             fc_layer.add_l2_regul_grad()
 
-    def l2_regul_loss(self):
-        s_loss = 0
+    def _l2_regul_loss(self):
+        s_loss = 0.
         for fc_layer in self.fc_layers:
             s_loss += fc_layer.l2_regul_loss()
 
         return s_loss
+
+    def l2_regularization(self):
+        if self.reg:
+            self._add_l2_regul_grad()
+            return self._l2_regul_loss()
+        return 0.
 
     def compute_loss_and_gradients(self, y):
         """
