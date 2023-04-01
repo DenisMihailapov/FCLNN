@@ -19,7 +19,6 @@ class FCLayersNN:
         """
 
         self.reg = reg
-        self.pred = None
 
         if n_hidden is None:
             n_hidden = []
@@ -48,8 +47,6 @@ class FCLayersNN:
         # [:0:-1]: [0, 1, 2, 3] -> [3, 2, 1]
         for fc_layer in self.fc_layers[:0:-1]:
             d_pred = fc_layer.backward(d_pred)
-
-            # print("d_pred", d_pred[5])
 
         return self.fc_layers[0].backward(d_pred)
 
