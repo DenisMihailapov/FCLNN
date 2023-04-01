@@ -7,3 +7,5 @@ The code is organized in the best practices of modern machine learning framework
 
 The project is constantly being developed and rethought. 
 We plan to create a mini framework with documentation.
+
+Same project: https://github.com/ddbourgin/numpy-ml/tree/master/numpy_ml/neural_nets
