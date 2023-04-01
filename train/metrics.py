@@ -27,7 +27,7 @@ def compute_accuracy(model, dataset: Dataset):
     predict = np.zeros_like(dataset.y)
 
     for batch_indices in batches_indices:  # TODO rewrite for dataset like train
-        predict[batch_indices] = model.predict(dataset.X[batch_indices])
-        predict[batch_indices] = predict[batch_indices].argmax(1)
+        model_pred = model.predict(dataset.X[batch_indices])
+        predict[batch_indices] = model_pred.argmax(1)
 
     return multiclass_accuracy(predict, dataset.y)
