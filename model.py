@@ -1,9 +1,6 @@
 from __future__ import annotations
 
-import numpy as np
-
 from nn import FullyConnectedLayer
-from nn.utils.functions import softmax, softmax_with_cross_entropy, mse
 
 
 class FCLayersNN:
@@ -73,46 +70,23 @@ class FCLayersNN:
             return self._l2_regul_loss()
         return 0.
 
-    def compute_loss_and_gradients(self, y):
-        """
-        Computes total loss and updates parameter gradients
-        on a batch of training examples
-        Arguments:
-        X, np array (batch_size, input_features) - input data
-        y, np array of int (batch_size) - classes
-        """
-
-        if y.dtype in [np.int, np.uint8, np.bool]:
-            loss, d_pred = softmax_with_cross_entropy(self.pred, y)
-        else:
-            y = y.reshape(self.pred.shape)
-            loss, d_pred = mse(self.pred, y, get_gradient=True)
-
-        self.backward(d_pred)
-
-        if self.reg:
-            self.add_l2_regul_grad()
-            loss += self.l2_regul_loss()
-
-        return np.round(loss, decimals=5)
-
-    def predict(self, X):
+    def predict(self, x):
         """Produces classifier predictions on the set.
 
         Arguments:
-            X, np array (test_samples, num_features)
+            x, numpy.ndarray (test_samples, num_features)
 
         Returns:
-            y_pred, np.array of int (test_samples)
+            y_pred, numpy.ndarray of int (test_samples)
         """
 
-        self.pred = X
+        y_pred = x
         for fc_layer in self.fc_layers[:-1]:
-            self.pred = fc_layer(self.pred)
+            y_pred = fc_layer(y_pred)
 
-        self.pred = self.fc_layers[-1](self.pred)
+        y_pred = self.fc_layers[-1](y_pred)
 
-        return softmax(self.pred).argmax(1)
+        return y_pred
 
     def params(self):
         params = dict()

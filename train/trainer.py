@@ -3,6 +3,7 @@ from tqdm import tqdm
 
 from dataset import Dataset
 from model import FCLayersNN
+from nn.loss import compute_loss_and_gradients
 from .metrics import compute_accuracy
 from .optim import Optimizer
 
@@ -45,9 +46,13 @@ class Trainer:
         for X, y in self.dataset:
             self.optimizer.zero_grad()
 
-            self.model.predict(X)  # save --> self.pred
-            loss = self.model.compute_loss_and_gradients(y)
-            batch_losses.append(loss)
+            y_pred = self.model.predict(X)
+            loss, d_pred = compute_loss_and_gradients(y_pred, y)
+
+            self.model.backward(d_pred)
+            loss += self.model.l2_regularization()
+
+            batch_losses.append(np.round(loss, decimals=5))
 
             self.optimizer.step()
 

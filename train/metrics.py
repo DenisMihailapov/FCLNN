@@ -28,5 +28,6 @@ def compute_accuracy(model, dataset: Dataset):
 
     for batch_indices in batches_indices:  # TODO rewrite for dataset like train
         predict[batch_indices] = model.predict(dataset.X[batch_indices])
+        predict[batch_indices] = predict[batch_indices].argmax(1)
 
     return multiclass_accuracy(predict, dataset.y)
