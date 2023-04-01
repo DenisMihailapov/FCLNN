@@ -77,16 +77,14 @@ class FCLayersNN:
             x, numpy.ndarray (test_samples, num_features)
 
         Returns:
-            y_pred, numpy.ndarray of int (test_samples)
+            logits, numpy.ndarray of int (test_samples)
         """
 
-        y_pred = x
-        for fc_layer in self.fc_layers[:-1]:
-            y_pred = fc_layer(y_pred)
+        logits = x
+        for fc_layer in self.fc_layers:
+            logits = fc_layer(logits)
 
-        y_pred = self.fc_layers[-1](y_pred)
-
-        return y_pred
+        return logits
 
     def params(self):
         params = dict()

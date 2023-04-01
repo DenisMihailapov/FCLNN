@@ -3,7 +3,7 @@ from tqdm import tqdm
 
 from dataset import Dataset
 from model import FCLayersNN
-from nn.loss import compute_loss_and_gradients
+from nn.utils.functions import softmax_with_cross_entropy
 from .metrics import compute_accuracy
 from .optim import Optimizer
 
@@ -46,8 +46,8 @@ class Trainer:
         for X, y in self.dataset:
             self.optimizer.zero_grad()
 
-            y_pred = self.model.predict(X)
-            loss, d_pred = compute_loss_and_gradients(y_pred, y)
+            logits = self.model.predict(X)
+            loss, d_pred = softmax_with_cross_entropy(logits, y)
 
             self.model.backward(d_pred)
             loss += self.model.l2_regularization()
