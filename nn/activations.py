@@ -2,7 +2,7 @@ from abc import ABC
 
 import numpy as np
 
-from nn.utils.functions import sigmoid, softmax
+from nn.utils.functions import sigmoid
 
 
 class IFunc:
@@ -88,17 +88,4 @@ class SiLU(IFunc, ABC):
 
     def backward(self, d_out):
         grad = self._sigm * (1. + self._x - self._out)
-        return grad * d_out
-
-
-class Softmax(IFunc, ABC):
-    def __init__(self):
-        self.probs = None
-
-    def forward(self, x):
-        self.probs = softmax(x)
-        return self.probs
-
-    def backward(self, d_out):
-        grad = self.forward(self.probs) * (1 - self.forward(self.probs))
         return grad * d_out

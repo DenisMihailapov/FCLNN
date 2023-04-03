@@ -4,7 +4,7 @@ from abc import ABC
 
 import numpy as np
 
-from nn.activations import Identity, ReLU, Softmax, Sigmoid, LeakyReLU, IFunc, SiLU
+from nn.activations import Identity, ReLU, Sigmoid, LeakyReLU, IFunc, SiLU
 from nn.utils.train_param import Param
 
 
@@ -35,8 +35,6 @@ class FullyConnectedLayer(IFunc, ABC):
         elif activation == "silu":
             self.act = SiLU()
 
-        elif activation == "softmax":
-            self.act = Softmax()
         else:
             raise NotImplementedError(f"Unknown activation {activation}")
 
