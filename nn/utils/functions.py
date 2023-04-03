@@ -31,34 +31,6 @@ def sigmoid(x):
     return 1. / (1. + np.exp(-x))
 
 
-def cross_entropy_loss(probs, target_index):
-    """Computes cross-entropy loss.
-
-    Arguments:
-        probs, np array, shape is either (N) or (batch_size, N) -
-        probabilities for every class.
-
-        target_index: np array of int, shape is (1) or (batch_size) -
-        index of the true class for given sample(s).
-
-    Returns:
-        loss: single value.
-    """
-
-    # loss for (N) shape probs
-    if probs.shape == (len(probs),):
-        loss = - np.log(probs[target_index])
-
-    # loss for (batch_size, N) shape probs
-    else:
-        loss = - np.log(probs[np.arange(len(probs)), target_index])
-        # use matrix coordinates where
-        #    colums from target_index,
-        #    rows   from np.arange(len(probs))
-
-    return loss
-
-
 def l2_regularization(W, reg_strength):
     """
     Computes L2 regularization loss on weights and its gradient
@@ -76,38 +48,6 @@ def l2_regularization(W, reg_strength):
     grad = 2 * reg_strength * W
 
     return loss, grad
-
-
-def softmax_with_cross_entropy(predictions, target_index):
-    """
-    Computes softmax and cross-entropy loss for model predictions,
-    including the gradient
-
-    Arguments:
-      predictions: np array, shape is either (N) or (batch_size, N) -
-        classifier output
-      target_index: np array of int, shape is (1) or (batch_size) -
-        index of the true class for given sample(s)
-
-    Returns:
-      loss, single value - cross-entropy loss
-      dprediction, np array same shape as predictions - gradient of predictions by loss value
-    """
-    probs = softmax(predictions)
-    loss = cross_entropy_loss(probs, target_index).mean()
-    mask = np.zeros_like(predictions)
-
-    # mask and dprediction for (N) shape predictions
-    if predictions.shape == (len(predictions),):
-        mask[target_index] = 1
-        d_preds = - (mask - probs)
-
-    # mask and dprediction for (batch_size, N) shape predictions
-    else:
-        mask[np.arange(len(mask)), target_index] = 1
-        d_preds = - (mask - probs) / len(mask)
-
-    return loss, d_preds
 
 
 def mse(x, y, get_gradient=False):

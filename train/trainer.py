@@ -3,7 +3,7 @@ from tqdm import tqdm
 
 from dataset import Dataset
 from model import FCLayersNN
-from nn.utils.functions import softmax_with_cross_entropy
+from .loss import Loss
 from .metrics import compute_accuracy
 from .optim import Optimizer
 
@@ -15,7 +15,8 @@ class Trainer:
     training parameters and optimization rule
     """
 
-    def __init__(self, model: FCLayersNN, dataset: Dataset, optim: Optimizer,
+    def __init__(self, model: FCLayersNN, dataset: Dataset,
+                 optim: Optimizer, loss_fn: Loss,
                  log_freq=5, num_epochs=20
                  ):
         """
@@ -24,6 +25,7 @@ class Trainer:
         Arguments:
         model - neural network model
         dataset, instance of Dataset class - data to train on
+        optim - optimization method (see optim.py)
         optim - optimization method (see optim.py)
         num_epochs, int - number of epochs to train
         learning_rate, float - initial learning rate
@@ -38,6 +40,7 @@ class Trainer:
         self.optimizer: Optimizer = optim  # TODO lr change strategy
         # self.learning_rate = learning_rate
         # self.learning_rate_decay = learning_rate_decay
+        self.loss_fn = loss_fn
 
     def epoch_step(self):
         batch_losses = []
@@ -47,7 +50,7 @@ class Trainer:
             self.optimizer.zero_grad()
 
             logits = self.model.predict(X)
-            loss, d_pred = softmax_with_cross_entropy(logits, y)
+            loss, d_pred = self.loss_fn(logits, y)
 
             self.model.backward(d_pred)
             loss += self.model.l2_regularization()
