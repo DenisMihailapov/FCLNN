@@ -47,7 +47,7 @@ class Trainer:
         # self.learning_rate_decay = learning_rate_decay
         self.loss_fn = loss_fn
 
-    def epoch_step(self) -> tuple[float, ndarray, float]:
+    def epoch_step(self) -> tuple[float, float, float]:
         batch_losses: List[float] = []
         self.dataset.mode("train")
 
