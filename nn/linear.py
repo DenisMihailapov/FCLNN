@@ -5,15 +5,16 @@ from abc import ABC
 import numpy as np
 
 from nn.activations import Identity, ReLU, Sigmoid, LeakyReLU, IFunc, SiLU
-from nn.utils.train_param import Param
+from nn.utils.initializer import ParamsInit
 
 
 class FullyConnectedLayer(IFunc, ABC):
     def __init__(self, n_input, n_output, reg_strength, activation="sigmoid"):
         self.reg = reg_strength
+        self.param_init = ParamsInit(mode="truncated_normal")
 
-        self.weight = Param(0.1 * np.random.randn(n_input, n_output))
-        self.bias = Param(0.1 * np.random.randn(1, n_output))
+        self.weight = self.param_init((n_input, n_output))
+        self.bias = self.param_init((1, n_output))
         self.x = None
 
         self.act = None

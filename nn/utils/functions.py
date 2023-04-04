@@ -56,3 +56,55 @@ def mse(x, y, get_gradient=False):
     if get_gradient:
         return np.mean(d ** 2), 2 * d
     return np.mean(d ** 2)
+
+
+def calc_in_out_shape(weight_shape):
+    """
+    Compute number of input and output for a weight matrix/volume.
+    Parameters
+    ----------
+    weight_shape : tuple
+        The dimensions of the weight matrix/volume. The final 2 entries must be
+        `in_ch`, `out_ch`.
+    Returns
+    -------
+    n_input : int
+        The number of input units in the weight tensor
+    n_output : int
+        The number of output units in the weight tensor
+    """
+    if len(weight_shape) == 2:
+        n_input, n_output = weight_shape
+    elif len(weight_shape) in [3, 4]:
+        in_ch, out_ch = weight_shape[-2:]
+        kernel_size = np.prod(weight_shape[:-2])
+        n_input, n_output = in_ch * kernel_size, out_ch * kernel_size
+    else:
+        raise ValueError("Unrecognized weight dimension: {}".format(weight_shape))
+    return n_input, n_output
+
+
+def truncated_normal(mean, std, out_shape):
+    samples = np.random.normal(loc=mean, scale=std, size=out_shape)
+    reject = np.logical_or(samples >= mean + 2 * std, samples <= mean - 2 * std)
+    while any(reject.flatten()):
+        resamples = np.random.normal(loc=mean, scale=std, size=reject.sum())
+        samples[reject] = resamples
+        reject = np.logical_or(samples >= mean + 2 * std, samples <= mean - 2 * std)
+    return samples
+
+
+# ----------------------------------------------- #
+#              Weight Initialization              #
+# ----------------------------------------------- #
+
+def he_uniform(weight_shape):
+    n_input, _ = calc_in_out_shape(weight_shape)
+    b = np.sqrt(6 / n_input)
+    return np.random.uniform(-b, b, size=weight_shape)
+
+
+def he_normal(weight_shape):
+    n_input, _ = calc_in_out_shape(weight_shape)
+    std = np.sqrt(2 / n_input)
+    return truncated_normal(0, std, weight_shape)
