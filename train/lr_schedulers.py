@@ -60,10 +60,11 @@ class LinearScheduler(LRScheduler):
 
 class StepLRScheduler(LRScheduler):
 
-    def __init__(self, init_lr, milestones, gamma=0.1):
+    def __init__(self, init_lr, milestones, gamma=0.1, verbose=False):
         self.milestones = milestones
         self.cur_ms = 0
         self.gamma = gamma
+        self.verbose = verbose
         super().__init__(init_lr)
 
     def step_lr(self):
@@ -71,6 +72,8 @@ class StepLRScheduler(LRScheduler):
         if self.step >= self.milestones[self.cur_ms] and self.cur_ms < len(self.milestones) - 1:
             self.cur_ms += 1
             self.cur_lr *= self.gamma
+            if self.verbose:
+                print(f"Epoch[{self.step}] LR is reduced to {self.cur_lr}\n")
 
         self.step += 1
         return self.cur_lr
