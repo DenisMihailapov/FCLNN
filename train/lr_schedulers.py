@@ -50,8 +50,42 @@ class LinearScheduler(LRScheduler):
 
     def step_lr(self):
         if self.step >= self.num_epochs:
+            print("The maximum value of epochs has been reached")
             raise StopIteration
 
         self.cur_lr += self.step_val
+        self.step += 1
+        return self.cur_lr
+
+
+class StepLRScheduler(LRScheduler):
+
+    def __init__(self, init_lr, milestones, gamma=0.1):
+        self.milestones = milestones
+        self.cur_ms = 0
+        self.gamma = gamma
+        super().__init__(init_lr)
+
+    def step_lr(self):
+
+        if self.step >= self.milestones[self.cur_ms] and self.cur_ms < len(self.milestones) - 1:
+            self.cur_ms += 1
+            self.cur_lr *= self.gamma
+
+        self.step += 1
+        return self.cur_lr
+
+
+class ExpScheduler(LRScheduler):
+    def __init__(self, init_lr=0.01, gamma=0.1):
+        super().__init__(init_lr)
+        self.gamma = gamma
+
+    def __str__(self):
+        return f"ExponentialScheduler(init_lr={self.init_lr}, gamma={self.gamma})"
+
+    def step_lr(self):
+
+        self.cur_lr *= 1 - self.gamma / 100
         self.step += 1
         return self.cur_lr
