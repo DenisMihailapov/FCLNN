@@ -1,13 +1,15 @@
 from abc import ABC
-from typing import Tuple
+from typing import Tuple, Optional
 
 import numpy as np
 
 from nn.utils.train_param import Param
+from train.lr_schedulers import LRScheduler
 
 
 class Optimizer:
     """Implements differed optimization rules for weights update."""
+    learning_rate: float
 
     def _update_rule(self, layer: str, param: Param, p_key: str) -> np.ndarray:
         """weights update rule"""
@@ -21,18 +23,27 @@ class Optimizer:
         """Update the parameter values using the update rule."""
         raise NotImplementedError
 
+    def end_epoch(self):
+        """Rule for end epoch."""
+        raise NotImplementedError
+
 
 class SGD(Optimizer, ABC):
     """Implements SGD with momentum and weight decay"""
 
     def __init__(self,
                  model_params: dict[str, dict[str, Param]],
-                 learning_rate: float, weight_decay: float = 0., momentum: float = 0.
+                 learning_rate: float = 0.1, weight_decay: float = 0., momentum: float = 0.,
+                 lr_scheduler: Optional[LRScheduler] = None
                  ):
 
         self.model_params = model_params
 
         self.learning_rate: float = learning_rate
+        if lr_scheduler is not None:
+            self.learning_rate = lr_scheduler.init_lr
+        self.lr_scheduler = lr_scheduler
+
         self.weight_decay: float = weight_decay
         self.momentum: float = momentum
 
@@ -63,6 +74,10 @@ class SGD(Optimizer, ABC):
             param["weight"].value = self._update_rule(layer, param["weight"], "weight")
             param["bias"].value = self._update_rule(layer, param["bias"], "bias")
 
+    def end_epoch(self):
+        if self.lr_scheduler is not None:
+            self.learning_rate = self.lr_scheduler.step_lr()
+
 
 class AdamW(Optimizer, ABC):
     """Implements Adam with weight decay"""
@@ -70,6 +85,7 @@ class AdamW(Optimizer, ABC):
     def __init__(self,
                  model_params: dict[str, dict[str, Param]],
                  learning_rate: float = 0.001,
+                 lr_scheduler: Optional[LRScheduler] = None,
                  betas: Tuple[float, float] = (0.9, 0.999),
                  weight_decay: float = 0.01,
                  eps: float = 1e-8
@@ -78,6 +94,10 @@ class AdamW(Optimizer, ABC):
         self.model_params = model_params
 
         self.learning_rate: float = learning_rate
+        if lr_scheduler is not None:
+            self.learning_rate = lr_scheduler.init_lr
+        self.lr_scheduler = lr_scheduler
+
         self.weight_decay: float = weight_decay
 
         self.beta1 = betas[0]
@@ -103,8 +123,6 @@ class AdamW(Optimizer, ABC):
 
     def _update_rule(self, layer: str, param: Param, p_key: str) -> np.ndarray:
 
-        self.time += 1
-
         self.moment[layer][p_key] = self.beta1 * self.moment[layer][p_key] + (1. - self.beta1) * param.grad
         self.velocity[layer][p_key] = self.beta2 * self.velocity[layer][p_key] + (1. - self.beta2) * param.grad ** 2
 
@@ -123,3 +141,8 @@ class AdamW(Optimizer, ABC):
         for layer, param in self.model_params.items():
             param["weight"].value = self._update_rule(layer, param["weight"], "weight")
             param["bias"].value = self._update_rule(layer, param["bias"], "bias")
+
+    def end_epoch(self):
+        self.time += 1  # TODO: when update time?
+        if self.lr_scheduler is not None:
+            self.learning_rate = self.lr_scheduler.step_lr()

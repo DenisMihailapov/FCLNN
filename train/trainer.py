@@ -61,6 +61,8 @@ class Trainer:
 
             self.optimizer.step()
 
+        self.optimizer.end_epoch()
+
         ave_loss = np.mean(batch_losses)
 
         train_accuracy = compute_accuracy(self.model, self.dataset)
@@ -84,7 +86,9 @@ class Trainer:
 
             if epoch % self.log_freq == 0:
                 if self.dataset.y.dtype in [np.int, np.uint8, np.bool]:
-                    print(f"\n Loss: {last_batch_loss}, Train accuracy: {train_accuracy}, val accuracy: {val_accuracy}")
+                    print(f"\n Loss: {last_batch_loss}, "
+                          f"Train accuracy: {train_accuracy}, val accuracy: {val_accuracy}, "
+                          f"LR: {round(self.optimizer.learning_rate, 8)}")
                 else:
                     print(f"\n Loss: {last_batch_loss}")
                     train_accuracy, val_accuracy = -1, -1
