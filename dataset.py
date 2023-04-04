@@ -1,6 +1,9 @@
 import os
+from abc import ABC
+from typing import Optional
 
 import numpy as np
+import pandas as pd
 import scipy.io as io
 
 
@@ -56,10 +59,88 @@ def prepare_for_neural_network(train_X, test_X):
     return train_flat, test_flat
 
 
-class Dataset:
+class Dataset(ABC):
+    X: Optional[np.ndarray]
+    y: Optional[np.ndarray]
+
+    def __init__(self):
+        self.batch_size = None
+        self.batches_indices = None
+        self.val_y = None
+        self.val_X = None
+        self.train_y = None
+        self.train_X = None
+        self.iter = -1
+
+    def random_split_train_val(self):
+        self.train_X, self.train_y, self.val_X, self.val_y = random_split_train_val(
+            self.train_X, self.train_y, num_val=int(self.train_y.shape[0] * 0.25)
+        )
+
+    def set_batches_indices(self):
+        shuffled_indices = np.arange(self.train_X.shape[0])
+        np.random.shuffle(shuffled_indices)
+        sections = np.arange(self.batch_size, self.train_X.shape[0], self.batch_size)
+        self.batches_indices = np.array_split(shuffled_indices, sections)
+
+    def get_dim_features(self):
+        return self.train_X.shape[1], len(np.unique(self.train_y))
+
+    def mode(self, mode='train'):
+        if mode == 'train':
+            self.X, self.y = self.train_X, self.train_y
+        elif mode == 'val':
+            self.X, self.y = self.val_X, self.val_y
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        self.iter += 1
+        if self.iter >= len(self.batches_indices):
+            self.iter = -1
+            raise StopIteration
+
+        batch_ind = self.batches_indices[self.iter]
+        return self.X[batch_ind], self.y[batch_ind]
+
+
+class TitanicDataset(Dataset):
+
+    def __init__(self, csv_data_path='data/titanic.csv', batch_size=32, drop_column=None, csv_sep=','):
+        super().__init__()
+        self.val_y = None
+        self.val_X = None
+        self.test_y = None
+        self.test_X = None
+        self.batches_indices = None
+
+        if drop_column is None:
+            drop_column = ['PassengerId', 'Name']
+
+        self.batch_size = batch_size
+
+        df = pd.read_csv(csv_data_path, sep=csv_sep)
+        df = df.drop(drop_column, axis=1)
+
+        cat_columns = df.select_dtypes(exclude=[int, float]).columns
+        df[cat_columns] = df[cat_columns].apply(lambda x: pd.factorize(x)[0])
+        self.columns = df.columns
+        df = df.fillna(-1).to_numpy()
+
+        self.train_X, self.train_y = df[:, 1:], df[:, 0].astype(int)
+        self.random_split_train_val()
+        self.set_batches_indices()
+
+
+class SVHNDataset(Dataset):
     """Utility class to hold training and validation data"""
 
     def __init__(self, data_path="./data", batch_size=32):
+        super().__init__()
+        self.batches_indices = None
+        self.val_y = None
+        self.val_X = None
         self.X, self.y = None, None
         self.iter = -1
 
@@ -81,35 +162,3 @@ class Dataset:
 
         self.random_split_train_val()
         self.set_batches_indices()
-
-    def random_split_train_val(self):
-        self.train_X, self.train_y, \
-            self.val_X, self.val_y = random_split_train_val(
-            self.train_X, self.train_y, num_val=int(self.train_y.shape[0] * 0.25))
-
-    def set_batches_indices(self):
-        shuffled_indices = np.arange(self.train_X.shape[0])
-        np.random.shuffle(shuffled_indices)
-        sections = np.arange(self.batch_size, self.train_X.shape[0], self.batch_size)
-        self.batches_indices = np.array_split(shuffled_indices, sections)
-
-    def get_dim_features(self):
-        return self.train_X.shape[1], len(np.unique(self.train_y))
-
-    def __iter__(self):
-        return self
-
-    def mode(self, mode='train'):
-        if mode == 'train':
-            self.X, self.y = self.train_X, self.train_y
-        elif mode == 'val':
-            self.X, self.y = self.val_X, self.val_y
-
-    def __next__(self):
-        self.iter += 1
-        if self.iter >= len(self.batches_indices):
-            self.iter = -1
-            raise StopIteration
-
-        batch_ind = self.batches_indices[self.iter]
-        return self.X[batch_ind], self.y[batch_ind]
