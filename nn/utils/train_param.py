@@ -34,3 +34,7 @@ class Param:
 
     def T(self):
         return self.value.T
+
+    def __str__(self):
+        return f"value: {self.value}\n\n" \
+               f"shape: {self.shape}"
