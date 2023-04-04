@@ -88,7 +88,6 @@ class ExpScheduler(LRScheduler):
         return f"ExponentialScheduler(init_lr={self.init_lr}, gamma={self.gamma})"
 
     def step_lr(self):
-
         self.cur_lr *= 1 - self.gamma / 100
         self.step += 1
         return self.cur_lr

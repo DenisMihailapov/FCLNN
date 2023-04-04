@@ -27,7 +27,7 @@ class Param:
     def __add__(self, other: np.ndarray | Param):
         return self.value + self._get_val(other)
 
-    def __pow__(self, degree: int | float ):
+    def __pow__(self, degree: int | float):
         return self.value ** degree
 
     def zero_grad(self):
