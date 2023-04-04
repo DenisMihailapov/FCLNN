@@ -89,3 +89,23 @@ class SiLU(IFunc, ABC):
     def backward(self, d_out):
         grad = self._sigm * (1. + self._x - self._out)
         return grad * d_out
+
+
+def get_activation(activation="ident"):
+    if activation == "ident":
+        return Identity()
+
+    elif activation == "relu":
+        return ReLU()
+    elif activation == "leaky_relu":
+        return LeakyReLU()
+    elif activation == "p_relu":
+        raise NotImplementedError("TODO")
+
+    elif activation == "sigmoid":
+        return Sigmoid()
+    elif activation == "silu":
+        return SiLU()
+
+    else:
+        raise NotImplementedError(f"Unknown activation {activation}")

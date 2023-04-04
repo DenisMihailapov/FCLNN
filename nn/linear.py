@@ -4,7 +4,7 @@ from abc import ABC
 
 import numpy as np
 
-from nn.activations import Identity, ReLU, Sigmoid, LeakyReLU, IFunc, SiLU
+from nn.activations import IFunc, get_activation
 from nn.utils.initializer import ParamsInit
 
 
@@ -17,27 +17,10 @@ class FullyConnectedLayer(IFunc, ABC):
         self.bias = self.param_init((1, n_output))
         self.x = None
 
-        self.act = None
-        self.reset_activation(activation)
+        self.act = get_activation(activation)
 
     def reset_activation(self, activation="ident"):
-        if activation == "ident":
-            self.act = Identity()
-
-        elif activation == "relu":
-            self.act = ReLU()
-        elif activation == "leaky_relu":
-            self.act = LeakyReLU()
-        elif activation == "p_relu":
-            raise NotImplementedError("TODO")
-
-        elif activation == "sigmoid":
-            self.act = Sigmoid()
-        elif activation == "silu":
-            self.act = SiLU()
-
-        else:
-            raise NotImplementedError(f"Unknown activation {activation}")
+        self.act = get_activation(activation)
 
     def forward(self, x):
         self.x = x
