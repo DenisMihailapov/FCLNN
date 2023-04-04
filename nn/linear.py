@@ -11,7 +11,7 @@ from nn.utils.initializer import ParamsInit
 class FullyConnectedLayer(IFunc, ABC):
     def __init__(self, n_input, n_output, reg_strength, activation="sigmoid"):
         self.reg = reg_strength
-        self.param_init = ParamsInit(mode="truncated_normal")
+        self.param_init = ParamsInit(mode="he_uniform")
 
         self.weight = self.param_init((n_input, n_output))
         self.bias = self.param_init((1, n_output))
