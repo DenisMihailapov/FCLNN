@@ -1,7 +1,9 @@
+from typing import Tuple
+
 import numpy as np
 
 
-def softmax(predictions):
+def softmax(predictions: np.ndarray) -> np.ndarray:
     '''
     Computes probabilities from scores
 
@@ -27,11 +29,11 @@ def softmax(predictions):
     return probs
 
 
-def sigmoid(x):
+def sigmoid(x: np.ndarray) -> np.ndarray:
     return 1. / (1. + np.exp(-x))
 
 
-def l2_regularization(W, reg_strength):
+def l2_regularization(W: np.ndarray, reg_strength: float) -> Tuple[float, np.ndarray]:
     """
     Computes L2 regularization loss on weights and its gradient
 
@@ -58,7 +60,7 @@ def mse(x, y, get_gradient=False):
     return np.mean(d ** 2)
 
 
-def calc_in_out_shape(weight_shape):
+def calc_in_out_shape(weight_shape: Tuple):
     """
     Compute number of input and output for a weight matrix/volume.
     Parameters
@@ -84,7 +86,7 @@ def calc_in_out_shape(weight_shape):
     return n_input, n_output
 
 
-def truncated_normal(mean, std, out_shape):
+def truncated_normal(mean: float, std: float, out_shape: Tuple):
     samples = np.random.normal(loc=mean, scale=std, size=out_shape)
     reject = np.logical_or(samples >= mean + 2 * std, samples <= mean - 2 * std)
     while any(reject.flatten()):
@@ -98,13 +100,13 @@ def truncated_normal(mean, std, out_shape):
 #              Weight Initialization              #
 # ----------------------------------------------- #
 
-def he_uniform(weight_shape):
+def he_uniform(weight_shape: Tuple):
     n_input, _ = calc_in_out_shape(weight_shape)
     b = np.sqrt(6 / n_input)
     return np.random.uniform(-b, b, size=weight_shape)
 
 
-def he_normal(weight_shape):
+def he_normal(weight_shape: Tuple):
     n_input, _ = calc_in_out_shape(weight_shape)
     std = np.sqrt(2 / n_input)
     return truncated_normal(0, std, weight_shape)

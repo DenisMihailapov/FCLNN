@@ -1,4 +1,5 @@
 from abc import ABC
+from typing import List
 
 
 class LRScheduler(ABC):
@@ -9,7 +10,7 @@ class LRScheduler(ABC):
         self.init_lr = init_lr
         self.reset_schedule()
 
-    def __call__(self):
+    def __call__(self) -> float:
         self.step_lr()
         return self.cur_lr
 
@@ -26,7 +27,7 @@ class ConstantScheduler(LRScheduler):
     def __str__(self):
         return f"ConstantScheduler(lr={self.cur_lr})"
 
-    def step_lr(self):
+    def step_lr(self) -> float:
         self.step += 1
         return self.cur_lr
 
@@ -48,7 +49,7 @@ class LinearScheduler(LRScheduler):
     def __str__(self):
         return f"LinearScheduler(init_lr={self.init_lr}, last_lr={self.last_lr}, num_epochs={self.num_epochs})"
 
-    def step_lr(self):
+    def step_lr(self) -> float:
         if self.step >= self.num_epochs:
             print("The maximum value of epochs has been reached")
             raise StopIteration
@@ -60,14 +61,14 @@ class LinearScheduler(LRScheduler):
 
 class StepLRScheduler(LRScheduler):
 
-    def __init__(self, init_lr, milestones, gamma=0.1, verbose=False):
+    def __init__(self, init_lr: float, milestones: List, gamma: float = 0.1, verbose: bool = False):
         self.milestones = milestones
         self.cur_ms = 0
         self.gamma = gamma
         self.verbose = verbose
         super().__init__(init_lr)
 
-    def step_lr(self):
+    def step_lr(self) -> float:
 
         if self.step >= self.milestones[self.cur_ms] and self.cur_ms < len(self.milestones) - 1:
             self.cur_ms += 1
@@ -80,14 +81,14 @@ class StepLRScheduler(LRScheduler):
 
 
 class ExpScheduler(LRScheduler):
-    def __init__(self, init_lr=0.01, gamma=0.1):
+    def __init__(self, init_lr: float = 0.01, gamma: float = 0.1):
         super().__init__(init_lr)
         self.gamma = gamma
 
     def __str__(self):
         return f"ExponentialScheduler(init_lr={self.init_lr}, gamma={self.gamma})"
 
-    def step_lr(self):
+    def step_lr(self) -> float:
         self.cur_lr *= 1 - self.gamma / 100
         self.step += 1
         return self.cur_lr

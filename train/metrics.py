@@ -3,7 +3,7 @@ import numpy as np
 from dataset import Dataset
 
 
-def multiclass_accuracy(prediction, ground_truth):
+def multiclass_accuracy(prediction: np.ndarray, ground_truth: np.ndarray) -> float:
     """Computes metrics for multiclass classification.
 
     Arguments:
@@ -17,7 +17,7 @@ def multiclass_accuracy(prediction, ground_truth):
     return np.round(np.sum(prediction == ground_truth) / len(prediction), decimals=3)
 
 
-def compute_accuracy(model, dataset: Dataset):
+def compute_accuracy(model, dataset: Dataset) -> float:
     """Computes accuracy on provided data using mini-batches"""
 
     indices = np.arange(dataset.X.shape[0])

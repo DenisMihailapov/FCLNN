@@ -9,7 +9,7 @@ from nn.utils.initializer import ParamsInit
 
 
 class FullyConnectedLayer(IFunc, ABC):
-    def __init__(self, n_input, n_output, reg_strength, activation="sigmoid"):
+    def __init__(self, n_input: int, n_output: int, reg_strength: float, activation: str = "sigmoid"):
         self.reg = reg_strength
         self.param_init = ParamsInit(mode="he_uniform")
 
@@ -19,14 +19,14 @@ class FullyConnectedLayer(IFunc, ABC):
 
         self.act = get_activation(activation)
 
-    def reset_activation(self, activation="ident"):
+    def reset_activation(self, activation: str = "ident"):
         self.act = get_activation(activation)
 
-    def forward(self, x):
+    def forward(self, x: np.ndarray) -> np.ndarray:
         self.x = x
         return self.act(self.bias + self.weight.dot(x))
 
-    def backward(self, d_out):
+    def backward(self, d_out: np.ndarray) -> np.ndarray:
         """Computes gradient with respect to input and accumulates gradients within self.weight and self.b
 
         Arguments:
@@ -47,7 +47,7 @@ class FullyConnectedLayer(IFunc, ABC):
     def params(self):
         return {'weight': self.weight, 'bias': self.bias}
 
-    def l2_regul_loss(self):
+    def l2_regul_loss(self) -> np.ndarray:
         if self.reg is None:
             self.reg = 0
         if self.reg == 0:
@@ -67,7 +67,3 @@ class FullyConnectedLayer(IFunc, ABC):
     def zero_grad(self):
         self.weight.zero_grad()
         self.bias.zero_grad()
-
-    def add_grad(self, W_grad, b_grad):
-        self.weight.grad += W_grad
-        self.bias.grad += b_grad

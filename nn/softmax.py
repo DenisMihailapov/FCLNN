@@ -10,11 +10,11 @@ class Softmax(IFunc, ABC):
     def __init__(self):
         self.probs = None
 
-    def forward(self, x):
+    def forward(self, x: np.ndarray) -> np.ndarray:
         self.probs = softmax(x)
         return self.probs
 
-    def backward(self, d_out):
+    def backward(self, d_out: np.ndarray) -> np.ndarray:
         """Calculate the jacobian of the Softmax function for the given set of inputs."""
         sm_d_out = d_out.copy()
         eye = np.eye(d_out.shape[1])

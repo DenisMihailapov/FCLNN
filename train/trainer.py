@@ -1,4 +1,7 @@
+from typing import Tuple, List, Optional
+
 import numpy as np
+from numpy import ndarray
 from tqdm import tqdm
 
 from dataset import Dataset
@@ -17,7 +20,7 @@ class Trainer:
 
     def __init__(self, model: FCLayersNN, dataset: Dataset,
                  optim: Optimizer, loss_fn: Loss,
-                 log_freq=None, num_epochs=20
+                 log_freq: Optional[int] = None, num_epochs: int = 20
                  ):
         """
         Initializes the trainer
@@ -44,8 +47,8 @@ class Trainer:
         # self.learning_rate_decay = learning_rate_decay
         self.loss_fn = loss_fn
 
-    def epoch_step(self):
-        batch_losses = []
+    def epoch_step(self) -> tuple[float, ndarray, float]:
+        batch_losses: List[float] = []
         self.dataset.mode("train")
 
         for X, y in self.dataset:
@@ -69,7 +72,7 @@ class Trainer:
 
         return batch_losses[-1], ave_loss, train_accuracy
 
-    def fit(self):
+    def fit(self) -> Tuple[List[float], List[float], List[float]]:
         """
         Trains a model
         """

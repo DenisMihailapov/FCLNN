@@ -6,13 +6,13 @@ from nn.utils.functions import softmax
 
 
 class Loss(ABC):
-    def _loss_fn(self, probs, target_index):
+    def _loss_fn(self, probs: np.ndarray, target_index: np.ndarray):
         raise NotImplementedError
 
-    def _backward(self, probs, target_index):
+    def _backward(self, probs: np.ndarray, target_index: np.ndarray):
         raise NotImplementedError
 
-    def forward(self, predictions, target_index):
+    def forward(self, predictions: np.ndarray, target_index: np.ndarray):
         raise NotImplementedError
 
     def __call__(self, *args, **kwargs):
@@ -24,7 +24,7 @@ class CrossEntropyLoss(Loss):
     def __init__(self):
         pass
 
-    def _loss_fn(self, probs, target_index):
+    def _loss_fn(self, probs: np.ndarray, target_index: np.ndarray):
         """Computes cross-entropy loss.
 
         Arguments:
@@ -47,7 +47,7 @@ class CrossEntropyLoss(Loss):
 
         return - np.log(probs + np.finfo(float).eps).mean()
 
-    def _backward(self, probs, target_index):
+    def _backward(self, probs: np.ndarray, target_index: np.ndarray):
         """Computes cross-entropy backpropagation.
 
         Arguments:
@@ -75,7 +75,7 @@ class CrossEntropyLoss(Loss):
 
         return (probs - mask) / batch_size
 
-    def forward(self, predictions, target_index):
+    def forward(self, predictions: np.ndarray, target_index: np.ndarray):
         """
         Computes softmax and cross-entropy loss for model predictions,
         including the gradient
