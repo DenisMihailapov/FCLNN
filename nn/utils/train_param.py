@@ -8,7 +8,8 @@ class Param:
     Captures both parameter value and the gradient
     """
 
-    def __init__(self, value):
+    def __init__(self, value, name=""):
+        self.name = name
         self.value: np.ndarray = value
         self.shape = value.shape
         self.grad: np.ndarray = np.zeros(self.shape)
@@ -36,5 +37,6 @@ class Param:
         return self.value.T
 
     def __str__(self):
-        return f"value: {self.value}\n\n" \
-               f"shape: {self.shape}"
+        return f"Parameter {self.name}\n" \
+               f"shape: {self.shape}\n" \
+               f"value: {self.value}\n\n"
