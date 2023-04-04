@@ -17,7 +17,7 @@ class Trainer:
 
     def __init__(self, model: FCLayersNN, dataset: Dataset,
                  optim: Optimizer, loss_fn: Loss,
-                 log_freq=5, num_epochs=20
+                 log_freq=None, num_epochs=20
                  ):
         """
         Initializes the trainer
@@ -36,6 +36,8 @@ class Trainer:
         self.dataset: Dataset = dataset
         self.num_epochs = num_epochs
         self.log_freq = log_freq
+        if self.log_freq is None:
+            self.log_freq = num_epochs // 20
 
         self.optimizer: Optimizer = optim  # TODO lr change strategy
         # self.learning_rate = learning_rate
