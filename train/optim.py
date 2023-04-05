@@ -10,8 +10,14 @@ from .base_classes import Optimizer, LRScheduler
 class SGD(Optimizer, ABC):
     """Implements SGD with momentum and weight decay"""
 
-    def __init__(self, model_params: dict[str, dict[str, Param]], learning_rate: float = 0.1, weight_decay: float = 0.,
-                 momentum: float = 0., lr_scheduler: Optional[LRScheduler] = None):
+    def __init__(
+            self,
+            model_params: dict[str, dict[str, Param]],
+            learning_rate: float = 0.1,
+            weight_decay: float = 0.,
+            momentum: float = 0.,
+            lr_scheduler: Optional[LRScheduler] = None
+    ):
 
         self.learning_rate: float = learning_rate
         super().__init__(lr_scheduler)
@@ -56,14 +62,15 @@ class SGD(Optimizer, ABC):
 class AdamW(Optimizer, ABC):
     """Implements Adam with weight decay"""
 
-    def __init__(self,
-                 model_params: dict[str, dict[str, Param]],
-                 learning_rate: float = 0.001,
-                 lr_scheduler: Optional[LRScheduler] = None,
-                 betas: Tuple[float, float] = (0.9, 0.999),
-                 weight_decay: float = 0.01,
-                 eps: float = 1e-8
-                 ):
+    def __init__(
+            self,
+            model_params: dict[str, dict[str, Param]],
+            learning_rate: float = 0.001,
+            lr_scheduler: Optional[LRScheduler] = None,
+            betas: Tuple[float, float] = (0.9, 0.999),
+            weight_decay: float = 0.01,
+            eps: float = 1e-8
+    ):
         self.learning_rate: float = learning_rate
         super().__init__(lr_scheduler)
 

@@ -107,7 +107,11 @@ class Dataset(ABC):
 
 class TitanicDataset(Dataset):
 
-    def __init__(self, csv_data_path='data/titanic.csv', batch_size=32, drop_column=None, csv_sep=','):
+    def __init__(
+            self,
+            csv_data_path='data/titanic.csv', csv_sep=',',
+            batch_size=32, drop_column=None,
+    ):
         super().__init__()
         self.val_y = None
         self.val_X = None

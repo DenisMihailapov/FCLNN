@@ -1,7 +1,6 @@
 from typing import Tuple, List, Optional
 
 import numpy as np
-from numpy import ndarray
 from tqdm import tqdm
 
 from dataset import Dataset
@@ -18,9 +17,13 @@ class Trainer:
     training parameters and optimization rule
     """
 
-    def __init__(self, model: FCLayersNN, dataset: Dataset,
-                 optim: Optimizer, loss_fn: Loss,
-                 log_freq: Optional[int] = None, num_epochs: int = 20
+    def __init__(self,
+                 model: FCLayersNN,
+                 dataset: Dataset,
+                 optim: Optimizer,
+                 loss_fn: Loss,
+                 log_freq: Optional[int] = None,
+                 num_epochs: int = 20
                  ):
         """
         Initializes the trainer

@@ -40,7 +40,11 @@ class LinearScheduler(LRScheduler):
 
 class StepLRScheduler(LRScheduler):
 
-    def __init__(self, init_lr: float, milestones: List, gamma: float = 0.1, verbose: bool = False):
+    def __init__(
+            self, init_lr: float,
+            milestones: List, gamma: float = 0.1,
+            verbose: bool = False
+    ):
         self.milestones = milestones
         self.cur_ms = 0
         self.gamma = gamma
@@ -56,7 +60,11 @@ class StepLRScheduler(LRScheduler):
 
 
 class ExpScheduler(LRScheduler):
-    def __init__(self, init_lr: float = 0.01, gamma: float = 0.1):
+    def __init__(
+            self,
+            init_lr: float = 0.01,
+            gamma: float = 0.1
+    ):
         super().__init__(init_lr)
         self.gamma = gamma
 

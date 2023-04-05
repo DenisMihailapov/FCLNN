@@ -10,8 +10,12 @@ from nn.utils.initializer import ParamsInit
 
 class FullyConnectedLayer(IFunc, ABC):
     def __init__(
-            self, n_input: int, n_output: int, reg_strength: float,
-            activation: str = "sigmoid", param_init_mode="normal"
+                self,
+                n_input: int,
+                n_output: int,
+                reg_strength: float,
+                activation: str = "sigmoid",
+                param_init_mode="normal"
     ):
         self.reg = reg_strength
         self.param_init = ParamsInit(mode=param_init_mode)

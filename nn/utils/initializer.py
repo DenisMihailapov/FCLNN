@@ -8,11 +8,12 @@ from nn.utils.train_param import Param
 
 class ParamsInit:
 
-    def __init__(self,
-                 mode: str = 'normal',
-                 mean: float = 0., std: float = 0.1,
-                 low: float = -0.4, high: float = 0.4
-                 ):
+    def __init__(
+            self,
+            mode: str = 'normal',
+            mean: float = 0., std: float = 0.1,
+            low: float = -0.4, high: float = 0.4
+    ):
         self.mode = mode
         self.mean = mean
         self.std = std
