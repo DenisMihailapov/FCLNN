@@ -4,45 +4,19 @@ from typing import Tuple, Optional
 import numpy as np
 
 from nn.utils.train_param import Param
-from train.lr_schedulers import LRScheduler
-
-
-class Optimizer:
-    """Implements differed optimization rules for weights update."""
-    learning_rate: float
-
-    def _update_rule(self, layer: str, param: Param, p_key: str) -> np.ndarray:
-        """weights update rule"""
-        raise NotImplementedError
-
-    def zero_grad(self):
-        """Sets gradients of all model parameters to zero."""
-        raise NotImplementedError
-
-    def step(self):
-        """Update the parameter values using the update rule."""
-        raise NotImplementedError
-
-    def end_epoch(self):
-        """Rule for end epoch."""
-        raise NotImplementedError
+from .base_classes import Optimizer, LRScheduler
 
 
 class SGD(Optimizer, ABC):
     """Implements SGD with momentum and weight decay"""
 
-    def __init__(self,
-                 model_params: dict[str, dict[str, Param]],
-                 learning_rate: float = 0.1, weight_decay: float = 0., momentum: float = 0.,
-                 lr_scheduler: Optional[LRScheduler] = None
-                 ):
-
-        self.model_params = model_params
+    def __init__(self, model_params: dict[str, dict[str, Param]], learning_rate: float = 0.1, weight_decay: float = 0.,
+                 momentum: float = 0., lr_scheduler: Optional[LRScheduler] = None):
 
         self.learning_rate: float = learning_rate
-        if lr_scheduler is not None:
-            self.learning_rate = lr_scheduler.init_lr
-        self.lr_scheduler = lr_scheduler
+        super().__init__(lr_scheduler)
+
+        self.model_params = model_params
 
         self.weight_decay: float = weight_decay
         self.momentum: float = momentum
@@ -75,8 +49,8 @@ class SGD(Optimizer, ABC):
             param["bias"].value = self._update_rule(layer, param["bias"], "bias")
 
     def end_epoch(self):
-        if self.lr_scheduler is not None:
-            self.learning_rate = self.lr_scheduler.step_lr()
+        if self._lr_scheduler is not None:
+            self._lr_scheduler.step_lr()
 
 
 class AdamW(Optimizer, ABC):
@@ -90,13 +64,10 @@ class AdamW(Optimizer, ABC):
                  weight_decay: float = 0.01,
                  eps: float = 1e-8
                  ):
+        self.learning_rate: float = learning_rate
+        super().__init__(lr_scheduler)
 
         self.model_params = model_params
-
-        self.learning_rate: float = learning_rate
-        if lr_scheduler is not None:
-            self.learning_rate = lr_scheduler.init_lr
-        self.lr_scheduler = lr_scheduler
 
         self.weight_decay: float = weight_decay
 
@@ -144,5 +115,5 @@ class AdamW(Optimizer, ABC):
 
     def end_epoch(self):
         self.time += 1  # TODO: when update time?
-        if self.lr_scheduler is not None:
-            self.learning_rate = self.lr_scheduler.step_lr()
+        if self._lr_scheduler is not None:
+            self._lr_scheduler.step_lr()

@@ -1,25 +1,6 @@
-from abc import ABC
 from typing import List
 
-
-class LRScheduler(ABC):
-    def __init__(self, init_lr):
-        """Abstract base class for all Scheduler objects."""
-        self.cur_lr = None
-        self.step = None
-        self.init_lr = init_lr
-        self.reset_schedule()
-
-    def __call__(self) -> float:
-        self.step_lr()
-        return self.cur_lr
-
-    def step_lr(self):
-        raise NotImplementedError
-
-    def reset_schedule(self):
-        self.step = 0
-        self.cur_lr = self.init_lr
+from train.base_classes import LRScheduler
 
 
 class ConstantScheduler(LRScheduler):
@@ -27,9 +8,9 @@ class ConstantScheduler(LRScheduler):
     def __str__(self):
         return f"ConstantScheduler(lr={self.cur_lr})"
 
-    def step_lr(self) -> float:
-        self.step += 1
-        return self.cur_lr
+    def _update_lr(self):
+        """There is no need update learning rate."""
+        pass
 
 
 class LinearScheduler(LRScheduler):
@@ -49,14 +30,12 @@ class LinearScheduler(LRScheduler):
     def __str__(self):
         return f"LinearScheduler(init_lr={self.init_lr}, last_lr={self.last_lr}, num_epochs={self.num_epochs})"
 
-    def step_lr(self) -> float:
+    def _update_lr(self):
         if self.step >= self.num_epochs:
             print("The maximum value of epochs has been reached")
             raise StopIteration
 
         self.cur_lr += self.step_val
-        self.step += 1
-        return self.cur_lr
 
 
 class StepLRScheduler(LRScheduler):
@@ -68,16 +47,12 @@ class StepLRScheduler(LRScheduler):
         self.verbose = verbose
         super().__init__(init_lr)
 
-    def step_lr(self) -> float:
-
+    def _update_lr(self):
         if self.step >= self.milestones[self.cur_ms] and self.cur_ms < len(self.milestones) - 1:
             self.cur_ms += 1
             self.cur_lr *= self.gamma
             if self.verbose:
                 print(f"Epoch[{self.step}] LR is reduced to {self.cur_lr}\n")
-
-        self.step += 1
-        return self.cur_lr
 
 
 class ExpScheduler(LRScheduler):
@@ -88,7 +63,5 @@ class ExpScheduler(LRScheduler):
     def __str__(self):
         return f"ExponentialScheduler(init_lr={self.init_lr}, gamma={self.gamma})"
 
-    def step_lr(self) -> float:
+    def _update_lr(self):
         self.cur_lr *= 1 - self.gamma / 100
-        self.step += 1
-        return self.cur_lr
