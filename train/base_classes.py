@@ -8,6 +8,20 @@ from numpy import ndarray
 from nn.utils.train_param import Param
 
 
+class Loss(ABC):
+    def _loss_fn(self, probs: ndarray, target_index: ndarray):
+        raise NotImplementedError
+
+    def _backward(self, probs: ndarray, target_index: ndarray):
+        raise NotImplementedError
+
+    def forward(self, predictions: ndarray, target_index: ndarray):
+        raise NotImplementedError
+
+    def __call__(self, *args, **kwargs):
+        return self.forward(*args, **kwargs)
+
+
 class Optimizer(ABC):
     pass
 

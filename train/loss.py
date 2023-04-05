@@ -3,20 +3,7 @@ from abc import ABC
 import numpy as np
 
 from nn.utils.functions import softmax
-
-
-class Loss(ABC):
-    def _loss_fn(self, probs: np.ndarray, target_index: np.ndarray):
-        raise NotImplementedError
-
-    def _backward(self, probs: np.ndarray, target_index: np.ndarray):
-        raise NotImplementedError
-
-    def forward(self, predictions: np.ndarray, target_index: np.ndarray):
-        raise NotImplementedError
-
-    def __call__(self, *args, **kwargs):
-        return self.forward(*args, **kwargs)
+from train.base_classes import Loss
 
 
 class CrossEntropyLoss(Loss):
