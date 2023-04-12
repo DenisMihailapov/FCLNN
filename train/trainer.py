@@ -1,7 +1,7 @@
 from typing import Tuple, List, Optional
 
 import numpy as np
-from tqdm import tqdm
+from tqdm.auto import tqdm
 
 from dataset import Dataset
 from model import FCLayersNN
