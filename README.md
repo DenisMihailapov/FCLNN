@@ -13,3 +13,4 @@ Same projects:
  - https://github.com/ddbourgin/numpy-ml/tree/master/numpy_ml/neural_nets
  - https://github.com/cosmic-cortex/neural-networks-from-scratch
  - https://github.com/AkiRusProd/numpy-nn-model
+ - https://github.com/wiseodd/hipsternet/
